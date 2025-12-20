@@ -21,19 +21,21 @@ from scipy.fft import fft, fftfreq
 plt.rcParams.update({
     'font.family': 'serif',
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
-    'font.size': 10,
-    'axes.labelsize': 11,
-    'axes.titlesize': 10,
-    'xtick.labelsize': 9,
-    'ytick.labelsize': 9,
-    'legend.fontsize': 8,
+    'font.size': 11,
+    'axes.labelsize': 13,
+    'axes.titlesize': 14,
+    'xtick.labelsize': 11,
+    'ytick.labelsize': 11,
+    'legend.fontsize': 10,
     'figure.dpi': 300,
     'savefig.dpi': 300,
     'text.usetex': False,
     'mathtext.fontset': 'stix',
-    'axes.linewidth': 0.8,
-    'xtick.major.width': 0.8,
-    'ytick.major.width': 0.8,
+    'axes.linewidth': 1.0,
+    'xtick.major.width': 1.0,
+    'ytick.major.width': 1.0,
+    'xtick.major.size': 5,
+    'ytick.major.size': 5,
     'xtick.direction': 'in',
     'ytick.direction': 'in',
     'xtick.top': True,
@@ -148,6 +150,14 @@ def compute_fisher_information(u, dx):
     return F
 
 
+def set_bold_ticks(ax):
+    """Set bold tick labels on both axes."""
+    for label in ax.get_xticklabels():
+        label.set_fontweight('bold')
+    for label in ax.get_yticklabels():
+        label.set_fontweight('bold')
+
+
 def main():
     # ========================================================================
     # Load data
@@ -189,9 +199,9 @@ def main():
     # ========================================================================
     # Create Figure (2x2 layout)
     # ========================================================================
-    fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.5))
-    fig.subplots_adjust(left=0.11, right=0.97, top=0.92, bottom=0.10,
-                        hspace=0.32, wspace=0.30)
+    fig, axes = plt.subplots(2, 2, figsize=(9.0, 8.0))
+    fig.subplots_adjust(left=0.11, right=0.97, top=0.94, bottom=0.15,
+                        hspace=0.35, wspace=0.30)
     
     panel_labels = ['(a)', '(b)', '(c)', '(d)']
     
@@ -206,13 +216,15 @@ def main():
         ax.loglog(k[mask], Pk[mask], 
                   color=CASES[case_id]['color'],
                   linestyle=CASES[case_id]['ls'],
-                  linewidth=1.2)
+                  linewidth=1.5)
     
-    ax.set_xlabel(r'$k$ [rad/m]')
-    ax.set_ylabel(r'$P(k)$ [m$^2$]')
-    ax.text(0.03, 0.95, panel_labels[0], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.set_xlabel(r'$k$ [rad/m]', fontweight='bold', fontsize=13)
+    ax.set_ylabel(r'$P(k)$ [m$^2$]', fontweight='bold', fontsize=13)
     ax.set_xlim(1e-2, 10)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.tick_params(axis='both', which='minor', width=0.8, length=3)
+    ax.set_title(panel_labels[0], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
     # ------------------------------------------------------------------------
     # (b) Spectral entropy evolution
@@ -223,12 +235,14 @@ def main():
         ax.plot(data['t'], info_measures[case_id]['spectral_entropy'],
                 color=CASES[case_id]['color'],
                 linestyle=CASES[case_id]['ls'],
-                linewidth=1.2)
+                linewidth=1.5)
     
-    ax.set_xlabel(r'$t$ [s]')
-    ax.set_ylabel(r'$S_k$ (normalized)')
-    ax.text(0.03, 0.95, panel_labels[1], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.set_xlabel(r'$t$ [s]', fontweight='bold', fontsize=13)
+    ax.set_ylabel(r'$S_k$ (normalized)', fontweight='bold', fontsize=13)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.minorticks_on()
+    ax.set_title(panel_labels[1], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
     # ------------------------------------------------------------------------
     # (c) Statistical complexity evolution
@@ -246,12 +260,15 @@ def main():
         ax.plot(data['t'], info_measures[case_id]['complexity'] / (10**C_exp),
                 color=CASES[case_id]['color'],
                 linestyle=CASES[case_id]['ls'],
-                linewidth=1.2)
+                linewidth=1.5)
     
-    ax.set_xlabel(r'$t$ [s]')
-    ax.set_ylabel(r'Complexity $C = H \times D$ $(\times 10^{' + str(C_exp) + r'})$')
-    ax.text(0.03, 0.95, panel_labels[2], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.set_xlabel(r'$t$ [s]', fontweight='bold', fontsize=13)
+    ax.set_ylabel(r'Complexity $C = H \times D$ $(\times 10^{' + str(C_exp) + r'})$', 
+                  fontweight='bold', fontsize=12)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.minorticks_on()
+    ax.set_title(panel_labels[2], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
     # ------------------------------------------------------------------------
     # (d) Fisher information evolution
@@ -262,24 +279,26 @@ def main():
         ax.plot(data['t'], info_measures[case_id]['fisher_info'],
                 color=CASES[case_id]['color'],
                 linestyle=CASES[case_id]['ls'],
-                linewidth=1.2)
+                linewidth=1.5)
     
-    ax.set_xlabel(r'$t$ [s]')
-    ax.set_ylabel(r'Fisher information $F$ [m$^{-2}$]')
-    ax.text(0.03, 0.95, panel_labels[3], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.set_xlabel(r'$t$ [s]', fontweight='bold', fontsize=13)
+    ax.set_ylabel(r'Fisher information $F$ [m$^{-2}$]', fontweight='bold', fontsize=13)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.minorticks_on()
+    ax.set_title(panel_labels[3], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
     # ------------------------------------------------------------------------
-    # Shared legend at top
+    # Shared legend at BOTTOM
     # ------------------------------------------------------------------------
     legend_elements = [plt.Line2D([0], [0], color=CASES[cid]['color'],
-                                   linestyle=CASES[cid]['ls'], linewidth=1.5,
+                                   linestyle=CASES[cid]['ls'], linewidth=2.0,
                                    label=CASES[cid]['label'])
                        for cid in CASES.keys() if cid in all_data]
     
-    fig.legend(handles=legend_elements, loc='upper center', ncol=4,
+    fig.legend(handles=legend_elements, loc='lower center', ncol=4,
                frameon=True, edgecolor='black', fancybox=False,
-               bbox_to_anchor=(0.54, 0.99), fontsize=9)
+               bbox_to_anchor=(0.54, 0.01), fontsize=10)
     
     # ========================================================================
     # Save Figure
@@ -389,7 +408,8 @@ def main():
         f.write("2. STATISTICAL COMPLEXITY shows variations during interactions\n")
         f.write("   when the wave field transiently becomes more structured.\n\n")
         f.write("3. FISHER INFORMATION reflects localization - higher values\n")
-        f.write("   indicate sharper, more localized soliton profiles.\n\n")
+        f.write("   indicate sharper, more localized soliton profiles.\n")
+        f.write("   Transient spikes occur during soliton collisions.\n\n")
         f.write("4. POWER SPECTRA show exponential decay at high k, consistent\n")
         f.write("   with smooth sech^2 profiles.\n\n")
         f.write("5. Information-theoretic stability confirms the integrable\n")

@@ -22,19 +22,21 @@ from scipy.fft import fft
 plt.rcParams.update({
     'font.family': 'serif',
     'font.serif': ['Times New Roman', 'DejaVu Serif'],
-    'font.size': 10,
-    'axes.labelsize': 11,
-    'axes.titlesize': 10,
-    'xtick.labelsize': 9,
-    'ytick.labelsize': 9,
-    'legend.fontsize': 8,
+    'font.size': 11,
+    'axes.labelsize': 13,
+    'axes.titlesize': 14,
+    'xtick.labelsize': 11,
+    'ytick.labelsize': 11,
+    'legend.fontsize': 10,
     'figure.dpi': 300,
     'savefig.dpi': 300,
     'text.usetex': False,
     'mathtext.fontset': 'stix',
-    'axes.linewidth': 0.8,
-    'xtick.major.width': 0.8,
-    'ytick.major.width': 0.8,
+    'axes.linewidth': 1.0,
+    'xtick.major.width': 1.0,
+    'ytick.major.width': 1.0,
+    'xtick.major.size': 5,
+    'ytick.major.size': 5,
     'xtick.direction': 'in',
     'ytick.direction': 'in',
     'xtick.top': True,
@@ -171,6 +173,14 @@ def estimate_correlation_dimension(trajectory):
     return coeffs[0]
 
 
+def set_bold_ticks(ax):
+    """Set bold tick labels on both axes."""
+    for label in ax.get_xticklabels():
+        label.set_fontweight('bold')
+    for label in ax.get_yticklabels():
+        label.set_fontweight('bold')
+
+
 def main():
     # ========================================================================
     # Load data
@@ -222,13 +232,14 @@ def main():
         RR1 = 0
         DET1 = 0
         thresh1 = 0
+        trajectory1 = None
     
     # ========================================================================
     # Create Figure (2x2 layout)
     # ========================================================================
-    fig, axes = plt.subplots(2, 2, figsize=(7.5, 6.5))
-    fig.subplots_adjust(left=0.11, right=0.97, top=0.95, bottom=0.10,
-                        hspace=0.32, wspace=0.32)
+    fig, axes = plt.subplots(2, 2, figsize=(9.0, 8.0))
+    fig.subplots_adjust(left=0.11, right=0.97, top=0.94, bottom=0.12,
+                        hspace=0.35, wspace=0.32)
     
     panel_labels = ['(a)', '(b)', '(c)', '(d)']
     
@@ -249,19 +260,21 @@ def main():
     for i in range(len(data3['t']) - 1):
         ax.plot([mode0_centered[i], mode0_centered[i+1]], 
                 [mode1_re[i], mode1_re[i+1]],
-                color=colors[i], linewidth=0.6)
+                color=colors[i], linewidth=0.8)
     
-    ax.scatter([mode0_centered[0]], [mode1_re[0]], c='green', s=60, marker='o', 
-               zorder=5, edgecolors='black', linewidths=1, label='Start')
-    ax.scatter([mode0_centered[-1]], [mode1_re[-1]], c='red', s=60, marker='s',
-               zorder=5, edgecolors='black', linewidths=1, label='End')
+    # Start and End markers (no legend here)
+    ax.scatter([mode0_centered[0]], [mode1_re[0]], c='green', s=100, marker='o', 
+               zorder=5, edgecolors='black', linewidths=1.5)
+    ax.scatter([mode0_centered[-1]], [mode1_re[-1]], c='red', s=100, marker='s',
+               zorder=5, edgecolors='black', linewidths=1.5)
     
-    ax.set_xlabel(r'Re$(\hat{u}_0) - \langle$Re$(\hat{u}_0)\rangle$ [m]')
-    ax.set_ylabel(r'Re$(\hat{u}_1)$ [m]')
-    ax.legend(loc='upper right', frameon=True, edgecolor='black', fancybox=False,
-              fontsize=8)
-    ax.text(0.03, 0.95, panel_labels[0], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.set_xlabel(r'Re$(\hat{u}_0) - \langle$Re$(\hat{u}_0)\rangle$ [m]', 
+                  fontweight='bold', fontsize=12)
+    ax.set_ylabel(r'Re$(\hat{u}_1)$ [m]', fontweight='bold', fontsize=13)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.minorticks_on()
+    ax.set_title(panel_labels[0], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
     # ------------------------------------------------------------------------
     # (b) Conservation space trajectory
@@ -277,24 +290,27 @@ def main():
     M_exp = int(np.floor(np.log10(M_scale))) if M_scale > 0 else -10
     E_exp = int(np.floor(np.log10(E_scale))) if E_scale > 0 else -10
     
+    # Plot trajectories (no legend here)
     ax.plot(M_dev / (10**M_exp), E_dev / (10**E_exp), 
-            color='#1f77b4', linewidth=0.8, label='Collision')
+            color='#1f77b4', linewidth=1.2)
     
-    if data1 is not None:
+    if trajectory1 is not None:
         M_dev1 = (trajectory1[:, 0] - 1)
         E_dev1 = (trajectory1[:, 2] - 1)
         ax.plot(M_dev1 / (10**M_exp), E_dev1 / (10**E_exp),
-                color='#ff7f0e', linewidth=0.8, label='Single soliton')
+                color='#ff7f0e', linewidth=1.2)
     
-    ax.scatter([0], [0], c='black', s=80, marker='+', linewidths=2,
-               zorder=5, label='Ideal (1,1)')
+    ax.scatter([0], [0], c='black', s=120, marker='+', linewidths=3,
+               zorder=5)
     
-    ax.set_xlabel(r'$(M/M_0 - 1)$ $(\times 10^{' + str(M_exp) + r'})$')
-    ax.set_ylabel(r'$(E/E_0 - 1)$ $(\times 10^{' + str(E_exp) + r'})$')
-    ax.legend(loc='upper right', frameon=True, edgecolor='black', fancybox=False,
-              fontsize=8)
-    ax.text(0.03, 0.95, panel_labels[1], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.set_xlabel(r'$(M/M_0 - 1)$ $(\times 10^{' + str(M_exp) + r'})$', 
+                  fontweight='bold', fontsize=12)
+    ax.set_ylabel(r'$(E/E_0 - 1)$ $(\times 10^{' + str(E_exp) + r'})$', 
+                  fontweight='bold', fontsize=12)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.minorticks_on()
+    ax.set_title(panel_labels[1], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
     # ------------------------------------------------------------------------
     # (c) Recurrence plot (collision case)
@@ -309,14 +325,15 @@ def main():
               extent=[t_ds[0], t_ds[-1], t_ds[0], t_ds[-1]],
               aspect='auto', interpolation='nearest')
     
-    ax.set_xlabel(r'$t$ [s]')
-    ax.set_ylabel(r'$t$ [s]')
-    ax.text(0.03, 0.95, panel_labels[2], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top', color='white',
-            bbox=dict(boxstyle='round,pad=0.2', facecolor='black', edgecolor='none'))
+    ax.set_xlabel(r'$t$ [s]', fontweight='bold', fontsize=13)
+    ax.set_ylabel(r'$t$ [s]', fontweight='bold', fontsize=13)
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.set_title(panel_labels[2], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
+    # RQA annotation inside plot
     ax.text(0.97, 0.03, f'RR = {RR3:.3f}\nDET = {DET3:.3f}',
-            transform=ax.transAxes, fontsize=8, ha='right', va='bottom',
+            transform=ax.transAxes, fontsize=10, ha='right', va='bottom',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='black'))
     
     # ------------------------------------------------------------------------
@@ -332,27 +349,52 @@ def main():
     width = 0.35
     
     bars1 = ax.bar(x_pos - width/2, rr_values, width,
-                   label='RR', color='#1f77b4',
-                   edgecolor='black', linewidth=0.5)
+                   color='#1f77b4', edgecolor='black', linewidth=1.0)
     bars2 = ax.bar(x_pos + width/2, det_values, width,
-                   label='DET', color='#ff7f0e',
-                   edgecolor='black', linewidth=0.5)
+                   color='#ff7f0e', edgecolor='black', linewidth=1.0)
     
-    ax.set_ylabel('Value')
+    ax.set_ylabel('Value', fontweight='bold', fontsize=13)
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(cases)
-    ax.legend(loc='upper right', frameon=True, edgecolor='black', fancybox=False,
-              fontsize=8)
+    ax.set_xticklabels(cases, fontweight='bold')
     ax.set_ylim(0, 1.15)
-    ax.text(0.03, 0.95, panel_labels[3], transform=ax.transAxes,
-            fontsize=11, fontweight='bold', va='top')
+    ax.tick_params(axis='both', which='major', labelsize=11, width=1.0, length=5)
+    ax.set_title(panel_labels[3], fontsize=14, fontweight='bold', pad=8)
+    set_bold_ticks(ax)
     
+    # Value labels on bars
     for bar, val in zip(bars1, rr_values):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02,
-                f'{val:.3f}', ha='center', va='bottom', fontsize=8)
+                f'{val:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
     for bar, val in zip(bars2, det_values):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.02,
-                f'{val:.3f}', ha='center', va='bottom', fontsize=8)
+                f'{val:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+    
+    # ------------------------------------------------------------------------
+    # Single organized legend at BOTTOM
+    # ------------------------------------------------------------------------
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    
+    # Create clean, organized legend items
+    legend_items = [
+        # Trajectory items (for panels a, b)
+        Line2D([0], [0], marker='o', color='green', markersize=10, linestyle='None',
+               markeredgecolor='black', markeredgewidth=1.5, label='Start'),
+        Line2D([0], [0], marker='s', color='red', markersize=10, linestyle='None',
+               markeredgecolor='black', markeredgewidth=1.5, label='End'),
+        Line2D([0], [0], color='#1f77b4', linewidth=2, label='Collision'),
+        Line2D([0], [0], color='#ff7f0e', linewidth=2, label='Single soliton'),
+        Line2D([0], [0], marker='+', color='black', markersize=12, linestyle='None',
+               markeredgewidth=3, label='Ideal (1,1)'),
+        # Bar chart items (for panel d)
+        Patch(facecolor='#1f77b4', edgecolor='black', linewidth=1, label='RR'),
+        Patch(facecolor='#ff7f0e', edgecolor='black', linewidth=1, label='DET'),
+    ]
+    
+    fig.legend(handles=legend_items, loc='lower center', ncol=7,
+               frameon=True, edgecolor='black', fancybox=False,
+               bbox_to_anchor=(0.54, -0.01), fontsize=9,
+               columnspacing=1.0, handletextpad=0.5)
     
     # ========================================================================
     # Save Figure
