@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![DOI](https://img.shields.io/badge/OSF-10.17605/OSF.IO/MS5EJ-blue)](https://doi.org/10.17605/OSF.IO/MS5EJ)
+[![DOI](https://zenodo.org/badge/1119866697.svg)](https://doi.org/10.5281/zenodo.17994339)
 
 Supplementary analysis scripts for the [`sangkuriang`](https://pypi.org/project/sangkuriang-ideal-solver/) KdV soliton solver.
 
