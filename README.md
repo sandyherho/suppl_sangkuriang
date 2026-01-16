@@ -24,6 +24,7 @@ pip install numpy scipy matplotlib netCDF4
 
 ```bash
 cd scripts/
+python diagram.py
 python conservation_analysis.py
 python spatiotemporal_evolution.py
 python soliton_dynamics.py
