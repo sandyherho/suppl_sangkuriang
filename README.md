@@ -105,6 +105,8 @@ sangkuriang-analysis/
 
 - Dasapta E. Irawan
 - Sandy H. S. Herho
+- Astyka Pamumpuni
+- Rendy Dwi Kartiko
 - Faruq Khadami
 - Iwan P. Anwar
 
