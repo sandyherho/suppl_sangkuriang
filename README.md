@@ -103,10 +103,11 @@ sangkuriang-analysis/
 
 ## Authors
 
+- Dasapta E. Irawan
 - Sandy H. S. Herho
 - Faruq Khadami
 - Iwan P. Anwar
-- Dasapta E. Irawan
+
 
 ## License
 
