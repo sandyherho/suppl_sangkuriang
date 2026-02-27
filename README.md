@@ -111,6 +111,7 @@ sangkuriang-analysis/
 - Iwan P. Anwar
 - Karina A. Sujatmiko
 - Alfita P. Handayani
+- Faiz R. Fajary
 - Rusmawan Suwarman
 
 ## License
