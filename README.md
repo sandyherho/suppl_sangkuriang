@@ -109,7 +109,9 @@ sangkuriang-analysis/
 - Rendy Dwi Kartiko
 - Faruq Khadami
 - Iwan P. Anwar
-
+- Karina A. Sujatmiko
+- Alfita P. Handayani
+- Rusmawan Suwarman
 
 ## License
 
